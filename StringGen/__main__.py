@@ -51,4 +51,5 @@ async def read_root():
 if __name__ == "__main__":
     # Start the FastAPI server on port 8000
     import uvicorn
+    LOGGER.info("Starting FastAPI server...")
     uvicorn.run(app, host="0.0.0.0", port=8000)
