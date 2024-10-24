@@ -1,5 +1,6 @@
 import threading
 import importlib
+import asyncio
 from flask import Flask
 from pyrogram import idle
 from StringGen import LOGGER, Anony
@@ -12,13 +13,9 @@ app = Flask(__name__)
 def index():
     return "StringGen Bot is running!"
 
-def run_flask():
-    port = int(os.environ.get('PORT', 8000))  # Default port is 8000 for Koyeb
-    app.run(host="0.0.0.0", port=port)
-
-def run_bot():
+async def anony_boot():
     try:
-        Anony.start()
+        await Anony.start()
     except Exception as ex:
         LOGGER.error(ex)
         quit(1)
@@ -27,7 +24,14 @@ def run_bot():
         importlib.import_module("StringGen.modules." + all_module)
 
     LOGGER.info(f"@{Anony.username} Started.")
-    idle()
+    await idle()
+
+def run_flask():
+    port = int(os.environ.get('PORT', 8000))  # Default port is 8000 for Koyeb
+    app.run(host="0.0.0.0", port=port)
+
+def run_bot():
+    asyncio.run(anony_boot())  # This will ensure the bot runs with the event loop
 
 if __name__ == "__main__":
     # Create two threads: one for Flask and one for the bot
