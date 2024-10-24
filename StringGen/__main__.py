@@ -1,5 +1,6 @@
 import importlib
 import threading
+import asyncio
 from flask import Flask
 from pyrogram import idle
 from StringGen import LOGGER, Anony
@@ -17,13 +18,13 @@ def run_flask():
     port = int(os.environ.get('PORT', 8000))  # Default port for Koyeb is 8000
     app.run(host="0.0.0.0", port=port)
 
-def anony_boot():
+async def anony_boot():
     try:
         LOGGER.info("Attempting to start the bot...")
-        Anony.start()  # Start the bot synchronously
+        await Anony.start()  # Start the bot asynchronously
 
         # Retrieve the bot's information after it has started
-        bot_info = Anony.get_me()  
+        bot_info = await Anony.get_me()
         LOGGER.info(f"Bot started as @{bot_info.username}")
     except Exception as ex:
         LOGGER.error(f"Error while starting bot: {ex}")
@@ -38,7 +39,11 @@ def anony_boot():
             LOGGER.error(f"Error loading module {all_module}: {e}")
 
     LOGGER.info(f"@{bot_info.username} Started successfully.")
-    idle()  # Keeps the bot running
+    await idle()  # Keeps the bot running
+
+def start_bot():
+    # Run the bot asynchronously
+    asyncio.run(anony_boot())
 
 if __name__ == "__main__":
     try:
@@ -46,8 +51,8 @@ if __name__ == "__main__":
         flask_thread = threading.Thread(target=run_flask)
         flask_thread.start()
 
-        # Start the bot
-        anony_boot()
+        # Start the bot in the main thread
+        start_bot()
 
     except KeyboardInterrupt:
         LOGGER.info("Stopping String Gen Bot...")
