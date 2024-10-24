@@ -32,21 +32,19 @@ async def anony_boot():
     LOGGER.info(f"@{Anony.username} Started successfully.")
     await idle()  # Keeps the bot running
 
-def run_flask():
+async def run_flask():
     port = int(os.environ.get('PORT', 8000))  # Default port for Koyeb is 8000
-    app.run(host="0.0.0.0", port=port)
+    await asyncio.to_thread(app.run, host="0.0.0.0", port=port)
+
+async def main():
+    # Run both Flask and Bot concurrently
+    await asyncio.gather(
+        run_flask(),
+        anony_boot()
+    )
 
 if __name__ == "__main__":
-    # Start Flask in a separate thread
-    flask_thread = threading.Thread(target=run_flask)
-    
-    # Start the Flask thread
-    flask_thread.start()
-
-    # Run the bot in the main thread using asyncio
-    asyncio.run(anony_boot())
-
-    # Wait for the Flask thread to finish
-    flask_thread.join()
-
-    LOGGER.info("Stopping String Gen Bot...")
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        LOGGER.info("Stopping String Gen Bot...")
