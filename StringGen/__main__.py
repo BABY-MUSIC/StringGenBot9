@@ -1,29 +1,43 @@
 import asyncio
 import importlib
+import logging
+import threading
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pyrogram import idle
-from StringGen import LOGGER, Anony
-from StringGen.modules import ALL_MODULES
-import threading
+from StringGen import Anony, ALL_MODULES
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+LOGGER = logging.getLogger(__name__)
 
 app = FastAPI()
 
 async def anony_boot():
     try:
+        LOGGER.info("Starting the bot...")
         await Anony.start()
+        LOGGER.info("Bot started successfully.")
     except Exception as ex:
-        LOGGER.error(ex)
+        LOGGER.error(f"Failed to start the bot: {ex}")
         quit(1)
 
+    # Import all modules
     for all_module in ALL_MODULES:
-        importlib.import_module("StringGen.modules." + all_module)
+        try:
+            importlib.import_module("StringGen.modules." + all_module)
+            LOGGER.info(f"Module {all_module} loaded successfully.")
+        except Exception as ex:
+            LOGGER.error(f"Error loading module {all_module}: {ex}")
 
-    LOGGER.info(f"@{Anony.username} Started.")
-    await idle()  # This will block, but we'll run it in a thread
+    LOGGER.info(f"@{Anony.username} started.")
+    await idle()  # Keep the bot running
 
 def start_bot():
-    asyncio.run(anony_boot())
+    try:
+        asyncio.run(anony_boot())
+    except Exception as ex:
+        LOGGER.error(f"Error running bot: {ex}")
 
 @app.on_event("startup")
 async def startup_event():
