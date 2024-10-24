@@ -8,7 +8,7 @@ load_dotenv()
 API_ID = int(getenv("API_ID", "16457832"))
 API_HASH = getenv("API_HASH", "3030874d0befdb5d05597deacc3e83ab")
 
-BOT_TOKEN = getenv("BOT_TOKEN", "7825267743:AAF4LLHMD7Q8lhy9wRfpE0oFB2f9i7qPbZY")
+BOT_TOKEN = getenv("BOT_TOKEN", "7561329328:AAGLoPkySLMXkxjlqSxj3H0lycU68Q7Hvgg")
 MONGO_DB_URI = getenv("MONGO_DB_URI", "mongodb+srv://TEAMBABY01:UTTAMRATHORE09@cluster0.vmjl9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 OWNER_ID = int(getenv("OWNER_ID", "7400383704"))
