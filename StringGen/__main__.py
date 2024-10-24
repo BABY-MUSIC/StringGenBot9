@@ -1,12 +1,11 @@
 import asyncio
 import importlib
-
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pyrogram import idle
-
 from StringGen import LOGGER, Anony
 from StringGen.modules import ALL_MODULES
+import threading
 
 app = FastAPI()
 
@@ -21,11 +20,15 @@ async def anony_boot():
         importlib.import_module("StringGen.modules." + all_module)
 
     LOGGER.info(f"@{Anony.username} Started.")
-    await idle()
+    await idle()  # This will block, but we'll run it in a thread
+
+def start_bot():
+    asyncio.run(anony_boot())
 
 @app.on_event("startup")
 async def startup_event():
-    await anony_boot()
+    # Start the bot in a separate thread
+    threading.Thread(target=start_bot).start()
 
 @app.get("/")
 async def read_root():
@@ -35,4 +38,3 @@ if __name__ == "__main__":
     # Start the FastAPI server on port 8000
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-    LOGGER.info("Stopping String Gen Bot...")
