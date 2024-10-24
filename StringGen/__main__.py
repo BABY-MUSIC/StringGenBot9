@@ -1,4 +1,3 @@
-import threading
 import importlib
 import asyncio
 from flask import Flask
@@ -45,6 +44,6 @@ async def main():
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        asyncio.run(main())  # Run both the Flask server and bot
     except KeyboardInterrupt:
         LOGGER.info("Stopping String Gen Bot...")
