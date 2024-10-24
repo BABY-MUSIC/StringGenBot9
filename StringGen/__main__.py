@@ -1,7 +1,7 @@
 import importlib
 import threading
 from flask import Flask
-from pyrogram import Client, idle
+from pyrogram import idle
 from StringGen import LOGGER, Anony
 from StringGen.modules import ALL_MODULES
 import os
@@ -21,7 +21,10 @@ def anony_boot():
     try:
         LOGGER.info("Attempting to start the bot...")
         Anony.start()  # Start the bot synchronously
-        LOGGER.info(f"Bot started as @{Anony.username}")
+
+        # Retrieve the bot's information after it has started
+        bot_info = Anony.get_me()  
+        LOGGER.info(f"Bot started as @{bot_info.username}")
     except Exception as ex:
         LOGGER.error(f"Error while starting bot: {ex}")
         quit(1)  # Exit if there's any error while starting the bot
@@ -34,7 +37,7 @@ def anony_boot():
         except Exception as e:
             LOGGER.error(f"Error loading module {all_module}: {e}")
 
-    LOGGER.info(f"@{Anony.username} Started successfully.")
+    LOGGER.info(f"@{bot_info.username} Started successfully.")
     idle()  # Keeps the bot running
 
 if __name__ == "__main__":
